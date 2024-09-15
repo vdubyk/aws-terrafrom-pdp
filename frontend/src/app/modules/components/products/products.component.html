@@ -1,0 +1,99 @@
+<div class="p-mt-4 p-px-3">
+    <div class="custom-margin">
+        <p-button
+                label="Add New Product"
+                size="small"
+                [raised]="true"
+                icon="pi pi-plus"
+                (click)="showProductForm()"
+                severity="primary"
+                class="custom-margin"
+        ></p-button>
+    </div>
+
+    <p-dialog header="Add New Product" [(visible)]="displayProductForm" [modal]="true" [closable]="true" [responsive]="true">
+        <form (ngSubmit)="onSubmit()" class="p-fluid custom-form">
+            <div class="p-field">
+                <label for="productName">Product Name</label>
+                <input id="productName" type="text" pInputText [(ngModel)]="newProduct.name" name="name" required />
+            </div>
+
+            <div class="p-field">
+                <label for="productPrice">Product Price</label>
+                <input id="productPrice" type="number" pInputText [(ngModel)]="newProduct.price" name="price" required min="0" />
+            </div>
+
+            <div class="p-field">
+                <label for="productPrice">Quantity</label>
+                <input id="productQuantity" type="number" pInputText [(ngModel)]="newProduct.quantity" name="quantity" required min="0" />
+            </div>
+
+            <div class="p-dialog-footer">
+                <p-button label="Save" icon="pi pi-check"  [raised]="true" severity="primary" class="p-button-outlined p-button-sm" type="submit"></p-button>
+
+                <p-button label="Cancel" icon="pi pi-times"  [raised]="true" severity="danger" class="p-button-outlined  p-button-sm" type="button" (click)="cancelProductForm()"></p-button>
+            </div>
+        </form>
+    </p-dialog>
+
+    <p-dialog header="Edit Product" [(visible)]="displayEditProductForm" [modal]="true" [closable]="true" [responsive]="true">
+        <form (ngSubmit)="onEditSubmit()" class="p-fluid custom-form">
+            <div class="p-field">
+                <label for="editProductName">Product Name</label>
+                <input id="editProductName" type="text" pInputText [(ngModel)]="editProduct.name" name="name" required />
+            </div>
+            <div class="p-field">
+                <label for="editProductPrice">Product Price</label>
+                <input id="editProductPrice" type="number" pInputText [(ngModel)]="editProduct.price" name="price" required min="0" />
+            </div>
+
+            <div class="p-field">
+                <label for="productPrice">Quantity</label>
+                <input id="editProductQuantity" type="number" pInputText [(ngModel)]="editProduct.quantity" name="quantity" required min="0" />
+            </div>
+
+            <div class="p-dialog-footer">
+                <p-button label="Update"  [raised]="true" severity="primary"  icon="pi pi-check" class="p-button-outlined p-button-sm" type="submit"></p-button>
+                <p-button label="Cancel"  [raised]="true" severity="danger" icon="pi pi-times" class="p-button-outlined p-button-sm" type="button" (click)="cancelEditProductForm()"></p-button>
+            </div>
+        </form>
+    </p-dialog>
+
+
+
+    <p-table [value]="products" [rows]="10" [sortField]="'name'" sortMode="single" class="p-datatable-striped">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price | currency }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>
+                   <p-button
+                            icon="pi pi-pencil"
+                            [rounded]="true"
+                            [text]="true"
+                            (click)="showEditProductForm(product)"/>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+
+<p-confirmDialog
+        header="Delete Product"
+        icon="pi pi-exclamation-triangle"
+        [acceptLabel]="'Delete'"
+        [rejectLabel]="'Cancel'"
+        [acceptButtonStyleClass]="'p-button-danger p-button-sm custom-accept-button'"
+        [rejectButtonStyleClass]="'p-button-secondary p-button-sm custom-reject-button'"
+></p-confirmDialog>
+

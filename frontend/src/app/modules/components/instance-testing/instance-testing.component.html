@@ -1,0 +1,25 @@
+<div class="custom-margin">
+<p-button
+        label="Get Public IP EC2"
+        [text]="true"
+        size="small"
+        [raised]="true"
+        severity="secondary"
+        class="custom-margin"
+        (click)="getPublicIp()"
+></p-button>
+</div>
+<p *ngIf="publicIp">Public IP: {{ publicIp }}</p>
+
+    <div class="custom-margin">
+<p-button
+        label="Get Private IP EC2"
+        [text]="true"
+        size="small"
+        [raised]="true"
+        severity="secondary"
+        class="custom-margin"
+        (click)="getPrivateIp()"
+></p-button>
+    </div>
+<p *ngIf="privateIp">Private IP: {{ privateIp }}</p>

@@ -1,0 +1,98 @@
+<div class="p-mt-4 p-px-3">
+    <div class="custom-margin">
+        <p-button label="Create New Order" icon="pi pi-plus" size="small" [raised]="true" severity="primary" (click)="displayCreateOrderDialog = true" class="custom-margin"></p-button>
+    </div>
+
+    <p-dialog header="Create New Order" [(visible)]="displayCreateOrderDialog" [modal]="true" [closable]="true" [responsive]="true">
+        <form (ngSubmit)="onSubmit()" [formGroup]="orderForm" class="p-fluid custom-form">
+            <div formArrayName="products">
+                <div *ngFor="let productCtrl of products.controls; let i = index" [formGroupName]="i" class="p-field p-grid">
+                    <p-divider *ngIf="i!=0"></p-divider>
+                    <div class="p-col-5">
+                        <label for="product{{i}}">Product</label>
+                        <p-dropdown
+                                [options]="productOptions"
+                                formControlName="productId"
+                                [placeholder]="'Select a Product'"
+                                inputId="product{{i}}">
+                        </p-dropdown>
+                    </div>
+                    <div class="p-col-5">
+                        <label for="quantity{{i}}">Quantity</label>
+                        <p-inputNumber
+                                formControlName="quantity"
+                                [min]="1"
+                                inputId="quantity{{i}}"
+                                [showButtons]="true"
+                                [placeholder]="'Enter Quantity'">
+                        </p-inputNumber>
+                    </div>
+                    <div *ngIf="i!=0" class="p-col-2 p-d-flex p-ai-end custom-margin">
+                        <p-button label="Delete"
+                                  [text]="true"
+                                  icon="pi pi-trash"
+                                  [raised]="true"
+                                  severity="danger"
+                                  size="small"
+                                  (click)="removeProductControl(i)"/>
+
+                    </div>
+                </div>
+            </div>
+            <div class="p-mt-2 custom-margin">
+                <p-button
+                        label="Add Product"
+                        [text]="true"
+                        icon="pi pi-plus"
+                        (click)="addProductControl()"
+                        [raised]="true"
+                        size="small"
+                      >
+                </p-button>
+            </div>
+            <p-divider />
+            <div class="p-field">
+                <label for="contactInfo">Contact Info (Email or Phone)</label>
+                <input id="contactInfo" type="text" pInputText formControlName="contactInfo">
+            </div>
+
+            <div class="p-dialog-footer">
+                <p-button label="Submit Order" size="small" icon="pi pi-check" type="submit" class="p-button-sm"></p-button>
+                <p-button label="Cancel" size="small"  severity="danger" icon="pi pi-times" (click)="displayCreateOrderDialog = false" class="p-button-secondary p-button-sm"></p-button>
+            </div>
+        </form>
+
+    </p-dialog>
+
+
+    <p-table [value]="orders" [rows]="10" [sortField]="'orderId'" sortMode="single" class="p-datatable-striped">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>List of Products</th>
+<!--                <th>Actions</th>-->
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order>
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.orderDate | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                <td>{{ order.totalPrice | currency }}</td>
+                <td>{{ order.status }}</td>
+                <td>
+                        <li *ngFor="let item of order.orderProducts">
+                            {{ item.productName }} - {{ item.quantity }}
+
+                        </li>
+                </td>
+
+<!--                <td>-->
+<!--                    <button pButton type="button" icon="pi pi-pencil" class="p-button-warning p-mr-2" (click)="updateOrder(order)"></button>-->
+<!--                </td>-->
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
