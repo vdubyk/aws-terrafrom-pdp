@@ -12,7 +12,5 @@
     </parent>
 
     <artifactId>terraform</artifactId>
-    <packaging>pom</packaging> <!-- Terraform doesn't build JARs -->
-
-    <!-- Optionally, use plugins like exec-maven-plugin to run Terraform commands -->
+    <packaging>pom</packaging>
 </project>
