@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class InstanceController {
 
     private final InstanceMetadataService instanceMetadataService;
-
+    @GetMapping("/health-check")
+    public String getHealthCheck() {
+        return new String("OK") ;
+    }
     @GetMapping("/public-ip")
     public String getPublicIp() {
         return instanceMetadataService.getPublicIp();
