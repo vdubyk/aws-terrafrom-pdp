@@ -1,6 +1,10 @@
 resource "aws_s3_bucket" "frontend" {
   bucket = "terraform-aws-java-pdp-frontend"
-#  object_ownership = "ObjectWriter"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
 }
 
 resource "aws_s3_bucket_website_configuration" "frontend_website" {
