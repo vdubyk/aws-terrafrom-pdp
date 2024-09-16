@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, NgZone} from '@angular/core';
 import { InstanceTestingService } from '../../services/instance-testing.service';
 
 @Component({
@@ -10,17 +10,21 @@ export class InstanceTestingComponent {
     publicIp!: string;
     privateIp!: string;
 
-    constructor(private instanceTestingService: InstanceTestingService) {}
+    constructor(private instanceTestingService: InstanceTestingService, private ngZone: NgZone) {}
 
     getPublicIp(): void {
         this.instanceTestingService.getPublicIp().subscribe((ip) => {
-            this.publicIp = ip;
+            this.ngZone.run(() => {
+                this.publicIp = ip;
+            });
         });
     }
 
     getPrivateIp(): void {
         this.instanceTestingService.getPrivateIp().subscribe((ip) => {
-            this.privateIp = ip;
+            this.ngZone.run(() => {
+                this.privateIp = ip;
+            });
         });
     }
 }
