@@ -1,0 +1,54 @@
+name: Deploy Frontend to S3
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.11.0'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install AWS CLI
+        run: sudo apt-get install awscli
+
+      - name: Retrieve ALB DNS from SSM
+        id: get-alb-dns
+        run: |
+          ALB_DNS=$(aws ssm get-parameter --name "ALB_DNS_NAME" --region eu-west-1 --query "Parameter.Value" --output text)
+          echo "ALB_DNS=$ALB_DNS"
+          echo "::set-output name=alb_dns::$ALB_DNS"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-west-1'
+
+      - name: Update API Base URL
+        run: |
+          sed -i "s|https://your-alb-dns-name/api|https://${{ steps.get-alb-dns.outputs.alb_dns }}/api|g" src/environments/environment.prod.ts
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: terraform-aws-java-pdp-frontend
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-west-1'
+          SOURCE_DIR: 'build'
