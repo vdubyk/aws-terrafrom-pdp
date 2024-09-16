@@ -19,11 +19,15 @@ jobs:
         with:
           node-version: '20.11.0'
 
+      - name: Navigate to frontend directory
+        run: cd frontend
+
       - name: Install dependencies
         run: npm install
+        working-directory: ./frontend
 
       - name: Install AWS CLI
-        run: sudo apt-get install awscli
+        run: sudo apt-get install -y awscli
 
       - name: Retrieve ALB DNS from SSM
         id: get-alb-dns
@@ -38,10 +42,11 @@ jobs:
 
       - name: Update API Base URL
         run: |
-          sed -i "s|https://your-alb-dns-name/api|https://${{ steps.get-alb-dns.outputs.alb_dns }}/api|g" src/environments/environment.prod.ts
+          sed -i "s|https://your-alb-dns-name/api|https://${{ steps.get-alb-dns.outputs.alb_dns }}/api|g" ./frontend/src/environments/environment.prod.ts
 
       - name: Build
         run: npm run build
+        working-directory: ./frontend
 
       - name: Deploy to S3
         uses: jakejarvis/s3-sync-action@master
@@ -52,4 +57,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'eu-west-1'
-          SOURCE_DIR: 'build'
+          SOURCE_DIR: 'frontend/build'
