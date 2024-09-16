@@ -39,7 +39,8 @@ jobs:
 
       - name: Update API Base URL
         run: |
-          sed -i "s|http://localhost:8080/api|https://${{ steps.get-alb-dns.outputs.alb_dns }}|g" ./frontend/src/environments/environment.ts
+          sed -i "s|http://localhost:8080/api|https://${{ steps.get-alb-dns.outputs.alb_dns }}/api|g" ./frontend/src/environments/environment.prod.ts
+
 
       - name: Build
         run: npm run build
