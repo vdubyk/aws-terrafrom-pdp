@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "frontend" {
   bucket = "terraform-aws-java-pdp-frontend"
+#  object_ownership = "ObjectWriter"
 }
 
 resource "aws_s3_bucket_website_configuration" "frontend_website" {
@@ -18,7 +19,7 @@ resource "aws_s3_bucket_policy" "frontend_policy" {
   bucket = aws_s3_bucket.frontend.id
 
   policy = jsonencode({
-    Version = "2024-09-17",
+    Version = "2012-10-17",
     Statement = [
       {
         Effect    = "Allow",
@@ -28,4 +29,12 @@ resource "aws_s3_bucket_policy" "frontend_policy" {
       },
     ]
   })
+}
+
+resource "aws_s3_bucket_ownership_controls" "frontend_ownership_controls" {
+  bucket = aws_s3_bucket.frontend.id
+
+  rule {
+    object_ownership = "ObjectWriter"
+  }
 }
