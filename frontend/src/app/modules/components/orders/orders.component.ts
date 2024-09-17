@@ -38,7 +38,6 @@ export class OrdersComponent implements OnInit {
                     label: product.name,
                     value: product.id
                 }));
-                // Ініціалізуємо форму з одним продуктом
                 this.addProductControl();
             },
             error => console.error('Error loading products:', error)
@@ -100,7 +99,7 @@ export class OrdersComponent implements OnInit {
                     this.displayCreateOrderDialog = false;
                     this.orderForm.reset();
                     this.products.clear();
-                    this.addProductControl(); // Додаємо один початковий продукт
+                    this.addProductControl();
                     this.loadOrders();
                 },
                 error => console.error('Error creating order:', error)
