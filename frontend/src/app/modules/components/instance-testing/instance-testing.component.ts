@@ -7,10 +7,11 @@ import { InstanceTestingService } from '../../services/instance-testing.service'
     styleUrls: ['./instance-testing.component.scss']
 })
 export class InstanceTestingComponent {
-    publicIp!: string;
-    privateIp!: string;
+    publicIp: string = '';
+    privateIp: string = '';
 
-    constructor(private instanceTestingService: InstanceTestingService, private ngZone: NgZone) {}
+    constructor(private instanceTestingService: InstanceTestingService, private ngZone: NgZone) {
+    }
 
     getPublicIp(): void {
         this.instanceTestingService.getPublicIp().subscribe((ip) => {
