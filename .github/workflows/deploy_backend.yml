@@ -1,0 +1,32 @@
+name: Build and Deploy Backend
+
+on:
+  workflow_dispatch:
+
+jobs:
+  refresh-ec2:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install AWS CLI
+        run: sudo apt-get install -y awscli
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'eu-west-1'
+
+      - name: Retrieve ASG Name from SSM
+        id: get-asg-name
+        run: |
+          ASG_NAME=$(aws ssm get-parameter --name "/myapp/backend-asg-name" --query "Parameter.Value" --output text)
+          echo "ASG_NAME=$ASG_NAME"
+          echo "::set-output name=asg_name::$ASG_NAME"
+
+      - name: Trigger Instance Refresh
+        run: |
+          aws autoscaling start-instance-refresh \
+            --auto-scaling-group-name ${{ steps.get-asg-name.outputs.asg_name }} \
+            --preferences MinHealthyPercentage=50,InstanceWarmup=30
