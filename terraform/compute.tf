@@ -60,7 +60,7 @@ resource "aws_autoscaling_group" "backend_asg" {
     id = aws_launch_template.backend_template.id
   }
   health_check_type         = "EC2"
-  health_check_grace_period = 300
+  health_check_grace_period = 60
   depends_on                = [
     aws_db_instance.postgres,
     data.aws_ssm_parameter.db_username,
