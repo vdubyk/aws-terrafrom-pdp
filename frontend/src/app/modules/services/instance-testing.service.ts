@@ -12,11 +12,11 @@ export class InstanceTestingService {
     constructor(private http: HttpClient) {}
 
     getPublicIp(): Observable<string> {
-        return this.http.get<string>(`${this.apiUrl}/public-ip`);
+        return this.http.get(`${this.apiUrl}/public-ip`, { responseType: 'text' });
     }
 
     getPrivateIp(): Observable<string> {
-        return this.http.get<string>(`${this.apiUrl}/private-ip`);
+        return this.http.get(`${this.apiUrl}/private-ip`, { responseType: 'text' });
     }
 }
 
